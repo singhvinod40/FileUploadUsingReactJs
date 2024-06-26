@@ -3,6 +3,7 @@ import "./FileUpload.css";
 import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import { useLocation } from "react-router-dom";
+import DataDisplay from "../TableView/TableComponent";
 
 const FileUpload = () => {
   const inputRef = useRef();
@@ -12,8 +13,10 @@ const FileUpload = () => {
   const [uploadStatus, setUploadStatus] = useState("select");
   const location = useLocation();
   const username = location.state && location.state.username;
-  const [message, setMessage] = useState('');
-  const [fileUrl, setFileUrl] = useState('');
+  const [message, setMessage] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
+  const [showDataDisplay, setShowDataDisplay] = useState(false); // State to control displaying DataDisplay
+  const [showButton, setShowButton] = useState(false); // State to control rendering of the button
 
   const [mode, setMode] = useState("light");
 
@@ -54,6 +57,9 @@ const FileUpload = () => {
     setPdfURL("");
     setProgress(0);
     setUploadStatus("select");
+    setFileUrl("");
+    setShowDataDisplay(false); // Reset showDataDisplay state
+    setShowButton(false); // Reset showButton state
   };
 
   const getPresignedUrl = async (fileName) => {
@@ -104,6 +110,9 @@ const FileUpload = () => {
       setUploadStatus("done");
       setFileUrl(filePath);
       setMessage("File uploaded successfully");
+
+      // Set showButton to true to render the button to show DataDisplay
+      setShowButton(true);
     } catch (error) {
       handleError(error, "Error uploading file");
     }
@@ -112,15 +121,15 @@ const FileUpload = () => {
   const handleError = (error, customMessage) => {
     console.error(customMessage, error);
     if (error.response) {
-      console.error('Error response data:', error.response.data);
-      console.error('Error response status:', error.response.status);
-      console.error('Error response headers:', error.response.headers);
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      console.error("Error response headers:", error.response.headers);
       setMessage(`Error: ${error.response.data}`);
     } else if (error.request) {
-      console.error('Error request:', error.request);
-      setMessage('Error: No response received from the server');
+      console.error("Error request:", error.request);
+      setMessage("Error: No response received from the server");
     } else {
-      console.error('Error message:', error.message);
+      console.error("Error message:", error.message);
       setMessage(`Error: ${error.message}`);
     }
   };
@@ -134,63 +143,92 @@ const FileUpload = () => {
         username={username}
       />
 
-<div>
-      <input
-        ref={inputRef}
-        type="file"
-        onChange={handleFileChange}
-        style={{ display: "none" }}
-      />
+      <div>
+        <input
+          ref={inputRef}
+          type="file"
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
 
-      {/* Button to trigger the file input dialog */}
-      {!selectedFile && (
-        <button className="file-btn" onClick={onChooseFile}>
-          <span className="material-symbols-outlined">upload</span> Upload File
-        </button>
-      )}
-
-      {selectedFile && (
-        <>
-          <div className="file-card">
-            <span className="material-symbols-outlined icon">description</span>
-
-            <div className="file-info">
-              <div style={{ flex: 1 }}>
-                <h6>{selectedFile?.name}</h6>
-
-                <div className="progress-bg">
-                  <div className="progress" style={{ width: `${progress}%` }} />
-                </div>
-              </div>
-
-              {uploadStatus === "select" ? (
-                <button onClick={clearFileInput}>
-                  <span class="material-symbols-outlined close-icon">
-                    close
-                  </span>
-                </button>
-              ) : (
-                <div className="check-circle">
-                  {uploadStatus === "uploading" ? (
-                    `${progress}%`
-                  ) : uploadStatus === "done" ? (
-                    <span
-                      class="material-symbols-outlined"
-                      style={{ fontSize: "20px" }}
-                    >
-                      check
-                    </span>
-                  ) : null}
-                </div>
-              )}
-            </div>
-          </div>
-          <button className="upload-btn" onClick={handleFileUpload}>
-            {uploadStatus === "select" || uploadStatus === 'uploading' ? "Upload" : "Done"}
+        {/* Button to trigger the file input dialog */}
+        {!selectedFile && (
+          <button className="file-btn" onClick={onChooseFile}>
+            <span className="material-symbols-outlined">upload</span> Upload File
           </button>
-        </>
-      )}
-    </div>
+        )}
+
+        {selectedFile && pdfURL && (
+          <div className="pdf-preview">
+            <iframe
+              title="PDF Preview"
+              width="800px"
+              height="800px"
+              src={pdfURL}
+            ></iframe>
+          </div>
+        )}
+
+        {selectedFile && (
+          <>
+            <div className="file-card">
+              <span className="material-symbols-outlined icon">description</span>
+
+              <div className="file-info">
+                <div style={{ flex: 1 }}>
+                  <h6>{selectedFile?.name}</h6>
+
+                  <div className="progress-bg">
+                    <div
+                      className="progress"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+
+                {uploadStatus === "select" ? (
+                  <button onClick={clearFileInput}>
+                    <span class="material-symbols-outlined close-icon">
+                      close
+                    </span>
+                  </button>
+                ) : (
+                  <div className="check-circle">
+                    {uploadStatus === "uploading" ? (
+                      `${progress}%`
+                    ) : uploadStatus === "done" ? (
+                      <span
+                        class="material-symbols-outlined"
+                        style={{ fontSize: "20px" }}
+                      >
+                        check
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button className="upload-btn" onClick={handleFileUpload}>
+              {uploadStatus === "select" || uploadStatus === "uploading"
+                ? "Upload"
+                : "Done"}
+            </button>
+          </>
+        )}
+
+        {/* Render button to show DataDisplay if showButton is true */}
+        <div>
+          {showButton && (
+            <button type="button" class="btn btn-outline-success my-5" onClick={() => setShowDataDisplay(true)}>
+              Run AI Model
+            </button>
+          )}
+          {showDataDisplay && (
+            <DataDisplay fileUrl={fileUrl} />
+          )}
+        </div>
+      </div>
     </>
   );
 };
