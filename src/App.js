@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import LoginForm from './components/LoginForm/LoginForm';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute'; // Import PrivateRoute
+import FileUpload from './components/uploadFile/FileUpload';
 
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Switch>
+          <Route exact path="/login">
+            <div className='login'> <LoginForm /> </div>
+          </Route>
+          <PrivateRoute path="/upload" component={FileUpload} />
+          <Redirect from="/" to="/login" />
+        </Switch>
+      </Router>
     </div>
   );
 }
