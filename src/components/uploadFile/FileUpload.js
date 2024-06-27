@@ -209,7 +209,7 @@ const FileUpload = () => {
               </div>
             </div>
 
-            <button className="upload-btn" onClick={handleFileUpload}>
+            <button type="button" class="" onClick={handleFileUpload}>
               {uploadStatus === "select" || uploadStatus === "uploading"
                 ? "Upload"
                 : "Done"}

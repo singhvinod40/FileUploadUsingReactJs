@@ -70,8 +70,9 @@ const DataDisplay = ({ fileUrl }) => {
                     <p>No data available</p>
                 )}
             </div>
-            <GoogleMapComponent lat={data.lat} long ={data.long}/>
-
+            <div className="map-wrapper">
+                <GoogleMapComponent />
+            </div>
         </div>
     );
 };
