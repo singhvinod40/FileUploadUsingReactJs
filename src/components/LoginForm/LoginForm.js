@@ -21,7 +21,7 @@ const LoginForm = () => {
         setErrorMessage('');
 
         try {
-            const response = await axios.get(`http://localhost:8080/api/auth`, {
+            const response = await axios.get(`https://asia-south1-apt-terrain-351005.cloudfunctions.net/Loginfunction-1`, {
                 params: {
                     username: username,
                     password: password
@@ -30,7 +30,7 @@ const LoginForm = () => {
 
         console.log(response.data);
 
-            if (response.data === "Authorized") {
+            if (response.status === 200) {
                 setIsLoggedIn(true);
                 history.push('/upload', { username });
             } else {
@@ -84,3 +84,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+

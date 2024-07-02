@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../navbar/Navbar";
 import { useLocation } from "react-router-dom";
 import DataDisplay from "../TableView/TableComponent";
+import { FaCloudUploadAlt  } from "react-icons/fa";
 
 const FileUpload = () => {
   const inputRef = useRef();
@@ -65,7 +66,7 @@ const FileUpload = () => {
   const getPresignedUrl = async (fileName) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/getPresignedUrl?fileName=${encodeURIComponent(
+        `https://asia-south1-apt-terrain-351005.cloudfunctions.net/fileUploadFunction?fileName=${encodeURIComponent(
           fileName
         )}`
       );
@@ -142,8 +143,8 @@ const FileUpload = () => {
         toggleMode={toggleMode}
         username={username}
       />
-
-      <div>
+      
+      <div >
         <input
           ref={inputRef}
           type="file"
@@ -154,7 +155,8 @@ const FileUpload = () => {
         {/* Button to trigger the file input dialog */}
         {!selectedFile && (
           <button className="file-btn" onClick={onChooseFile}>
-            <span className="material-symbols-outlined">upload</span> Upload File
+            <FaCloudUploadAlt  size={60} />
+            Upload File
           </button>
         )}
 
@@ -172,7 +174,7 @@ const FileUpload = () => {
         {selectedFile && (
           <>
             <div className="file-card">
-              <span className="material-symbols-outlined icon">description</span>
+              <span className="material-symbols-outlined icon">Description</span>
 
               <div className="file-info">
                 <div style={{ flex: 1 }}>
@@ -209,7 +211,7 @@ const FileUpload = () => {
               </div>
             </div>
 
-            <button type="button" class="" onClick={handleFileUpload}>
+            <button type="button" class="upload-btn" onClick={handleFileUpload}>
               {uploadStatus === "select" || uploadStatus === "uploading"
                 ? "Upload"
                 : "Done"}
