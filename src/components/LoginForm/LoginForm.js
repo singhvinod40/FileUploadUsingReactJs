@@ -21,7 +21,7 @@ const LoginForm = () => {
         setErrorMessage('');
 
         try {
-            const response = await axios.get(`https://asia-south1-apt-terrain-351005.cloudfunctions.net/Loginfunction-1`, {
+            const response = await axios.get(`https://asia-south1-apt-terrain-351005.cloudfunctions.net/LoginFunction`, {
                 params: {
                     username: username,
                     password: password
