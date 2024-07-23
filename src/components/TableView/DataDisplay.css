@@ -1,0 +1,11 @@
+.pretty-json {
+    background-color: #f8f9fa;  /* Light gray background for readability */
+    border-radius: 5px;        /* Rounded corners */
+    padding: 10px;             /* Padding inside the box */
+    font-family: monospace;    /* Monospaced font for better JSON formatting */
+    white-space: pre-wrap;     /* Preserve whitespace and wrap long lines */
+    overflow-x: auto;          /* Horizontal scroll for long lines */
+    margin: 10px 0;            /* Margin to separate from other elements */
+    color: #343a40;            /* Darker text color for better contrast */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visual separation */
+}
