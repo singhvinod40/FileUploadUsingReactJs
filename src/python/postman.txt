@@ -1,0 +1,3 @@
+{
+  "gcs_uri": "gs://hackfest2024/sample.pdf"
+}
