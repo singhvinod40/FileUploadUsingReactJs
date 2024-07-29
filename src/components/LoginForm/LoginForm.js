@@ -32,7 +32,7 @@ const LoginForm = () => {
 
             if (response.status === 200) {
                 setIsLoggedIn(true);
-                history.push('/upload', { username });
+                history.push('/home', { username });
             } else {
                 setErrorMessage('Username or password is incorrect');
             }

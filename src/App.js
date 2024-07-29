@@ -4,23 +4,21 @@ import LoginForm from './components/LoginForm/LoginForm';
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'; // Import PrivateRoute
 import FileUpload from './components/uploadFile/FileUpload';
-import PythonRunner from './components/PythonRunner';
+import Home from './components/Home/Home';
 
 function App() {
 
   return (
     <div className="App">
-      {/* <Router>
+      <Router>
         <Switch>
           <Route exact path="/login">
             <div className='login'> <LoginForm /> </div>
           </Route>
-          <PrivateRoute path="/upload" component={FileUpload} />
+          <PrivateRoute path="/home" component={Home} />
           <Redirect from="/" to="/login" />
         </Switch>
-      </Router> */}
-
-      <PythonRunner />
+      </Router>
     </div>
   );
 }

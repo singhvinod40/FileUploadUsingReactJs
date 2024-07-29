@@ -4,10 +4,9 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FaUserCircle, FaRegUser } from "react-icons/fa";
 import logo from "../Assets/hackfestLogo.png";
 import { CiPower } from "react-icons/ci";
-import { useHistory } from 'react-router-dom'; 
+import { Link, useHistory } from 'react-router-dom'; // Import Link
 
 export default function Navbar(props) {
-
     const history = useHistory();
 
     const switchTooltip = (
@@ -16,27 +15,26 @@ export default function Navbar(props) {
         </Tooltip>
     );
 
-    const logoutIcon =(
-            <Tooltip id="switch-tooltip">
+    const logoutIcon = (
+        <Tooltip id="switch-tooltip">
             {props.mode === 'light' ? 'Log Out' : 'Log Out'}
         </Tooltip>
     );
 
     const iconColor = props.mode === 'light' ? '#000000' : '#ffffff';
 
-    const logOut =  () => {
+    const logOut = () => {
         history.push('/login');
-        console.log("logged Out")
+        console.log("logged Out");
     };
-
 
     return (
         <>
-            <nav className={`navbar navbar-expand-lg  fixed-top navbar-${props.mode} bg-${props.mode}`}>
+            <nav className={`navbar navbar-expand-lg fixed-top navbar-${props.mode} bg-${props.mode}`}>
                 <div className='container-fluid'>
-                    <a href="#" className="logo">
+                    <Link to="/home" className="logo"> 
                         <img src={logo} alt="Logo" className="logo-img" style={{ width: "80px", height: "50px" }} />
-                    </a>
+                    </Link>
 
                     <a className="navbar-brand" href="#">{props.title}</a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +43,7 @@ export default function Navbar(props) {
 
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
-
+                            {/* Add any additional nav items here */}
                         </ul>
                         <div className="d-inline-flex align-items-center">
                             {props.mode === 'light' ? <FaUserCircle size={30} style={{ color: iconColor, marginRight: '5px' }} /> : <FaRegUser size={30} style={{ color: iconColor, marginRight: '5px' }} />}

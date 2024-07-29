@@ -1,52 +1,48 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import GoogleMapComponent from "../GoogleMap/GoogleMapComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import './DataDisplay.css';
+import Spinner from "../spinner/Spinner";
 
 const DataDisplay = ({ fileUrl }) => {
-    const [data, setData] = useState([]);
-    const [dummydata, setDummyData] = useState([]);
+    const [address, setAddress] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoader] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log("File URL uploaded: " + fileUrl);
             try {
-                const response = await axios.get(
-                    `http://localhost:8080/api/getData`, {
-                    params: {
-                        bucketLocation: fileUrl
+                setLoader(true);
+                const response = await axios.post('http://localhost:5000/process-document', {
+                    fileUrl: fileUrl
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
                 });
-                setData(response.data);
+
+                if (response.status === 200) {
+                    const { address } = response.data;
+                    setAddress(address);
+                    setLoader(false);
+                    console.log("Address data: ", address);
+                } else {
+                    setError(`Error: ${response.data.error}`);
+                }
             } catch (error) {
-                console.error("Error fetching data from backend:", error.message);
+                setError(`Error: ${error.message}`);
             }
         };
 
         fetchData();
     }, [fileUrl]);
 
-    useEffect(() => {
-        setDummyData([
-            {
-                data: {
-                    StrtNm: "Pennsylvania Avenue",
-                    BldgNb: "1600",
-                    BldgNm: "The White House",
-                    TwnNm: "Washington, DC",
-                    Ctry: "US"
-                },
-                lat: 12.923903688616994,
-                long: 77.6845062113533
-            }
-        ]);
-    }, []);
-
     const copyToClipboard = () => {
-        const dummydataString = dummydata.map((item) => JSON.stringify(item.data, null, 2)).join("\n");
+        const addressString = JSON.stringify(address, null, 2);
 
-        navigator.clipboard.writeText(dummydataString).then(() => {
+        navigator.clipboard.writeText(addressString).then(() => {
             toast.success("Copied to clipboard!");
         }).catch((error) => {
             console.error("Error copying to clipboard:", error);
@@ -59,15 +55,15 @@ const DataDisplay = ({ fileUrl }) => {
             <div className="data-display-container d-flex justify-content-center align-items-center">
                 <div className="card" style={{ width: "50rem" }}>
                     <div className="card-body">
-                        <h5 className="card-title">Extracted Data</h5>
-
+                        <h5 className="card-title">Extracted Address</h5>
+                        {loading && <Spinner />}
                         <div className="card-text">
-                            {dummydata && dummydata.length > 0 ? (
-                                dummydata.map((element, index) => (
-                                    <pre key={index} className="pretty-json">{JSON.stringify(element.data, null, 2)}</pre>
-                                ))
+                            {!loading && address ? (
+                                <pre className="pretty-json">{JSON.stringify(address, null, 2)}</pre>
+                            ) : error ? (
+                                <p>{error}</p>
                             ) : (
-                                <p>No data available</p>
+                                <p>No address data available</p>
                             )}
                         </div>
 
@@ -77,11 +73,6 @@ const DataDisplay = ({ fileUrl }) => {
                     </div>
                 </div>
             </div>
-
-            <div className="map-wrapper">
-                {dummydata.length > 0 && <GoogleMapComponent lat={dummydata[0].lat} long={dummydata[0].long} />}
-            </div>
-
             {/* Toast container */}
             <ToastContainer />
         </>

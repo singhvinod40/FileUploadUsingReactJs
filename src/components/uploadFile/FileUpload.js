@@ -1,48 +1,29 @@
 import React, { useRef, useState } from "react";
 import "./FileUpload.css";
 import axios from "axios";
-import Navbar from "../navbar/Navbar";
-import { useLocation } from "react-router-dom";
 import DataDisplay from "../TableView/TableComponent";
-import { FaCloudUploadAlt  } from "react-icons/fa";
+import { FaCloudUploadAlt } from "react-icons/fa";
 
-const FileUpload = () => {
+const FileUpload = ({ onFileUploadClick }) => {
   const inputRef = useRef();
   const [selectedFile, setSelectedFile] = useState(null);
   const [pdfURL, setPdfURL] = useState("");
   const [progress, setProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState("select");
-  const location = useLocation();
-  const username = location.state && location.state.username;
   const [message, setMessage] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const [showDataDisplay, setShowDataDisplay] = useState(false); // State to control displaying DataDisplay
-  const [showButton, setShowButton] = useState(false); // State to control rendering of the button
-
-  const [mode, setMode] = useState("light");
-
-  const toggleMode = () => {
-    if (mode === "light") {
-      setMode("dark");
-      document.body.style.background = "#042743";
-    } else {
-      setMode("light");
-      document.body.style.background = "white";
-    }
-  };
+  const [showDataDisplay, setShowDataDisplay] = useState(false);
+  const [showButton, setShowButton] = useState(false);
 
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
       setSelectedFile(file);
 
-      // Check if the selected file is a PDF
       if (file.type === "application/pdf") {
-        // Generate URL for PDF file
         const url = URL.createObjectURL(file);
         setPdfURL(url);
       } else {
-        // Handle non-PDF file types if needed
         console.log("Selected file is not a PDF.");
       }
     }
@@ -50,6 +31,7 @@ const FileUpload = () => {
 
   const onChooseFile = () => {
     inputRef.current.click();
+  
   };
 
   const clearFileInput = () => {
@@ -59,16 +41,15 @@ const FileUpload = () => {
     setProgress(0);
     setUploadStatus("select");
     setFileUrl("");
-    setShowDataDisplay(false); // Reset showDataDisplay state
-    setShowButton(false); // Reset showButton state
+    setShowDataDisplay(false);
+    setShowButton(false);
+
   };
 
   const getPresignedUrl = async (fileName) => {
     try {
       const response = await axios.get(
-        `https://asia-south1-apt-terrain-351005.cloudfunctions.net/fileUploadFunction?fileName=${encodeURIComponent(
-          fileName
-        )}`
+        `https://asia-south1-apt-terrain-351005.cloudfunctions.net/fileUploadFunction?fileName=${encodeURIComponent(fileName)}`
       );
       return response.data;
     } catch (error) {
@@ -84,6 +65,7 @@ const FileUpload = () => {
 
     if (uploadStatus === "done") {
       clearFileInput();
+      onFileUploadClick(); // reset Homeview when clicked on done 
       return;
     }
 
@@ -111,8 +93,6 @@ const FileUpload = () => {
       setUploadStatus("done");
       setFileUrl(filePath);
       setMessage("File uploaded successfully");
-
-      // Set showButton to true to render the button to show DataDisplay
       setShowButton(true);
     } catch (error) {
       handleError(error, "Error uploading file");
@@ -122,29 +102,17 @@ const FileUpload = () => {
   const handleError = (error, customMessage) => {
     console.error(customMessage, error);
     if (error.response) {
-      console.error("Error response data:", error.response.data);
-      console.error("Error response status:", error.response.status);
-      console.error("Error response headers:", error.response.headers);
       setMessage(`Error: ${error.response.data}`);
     } else if (error.request) {
-      console.error("Error request:", error.request);
       setMessage("Error: No response received from the server");
     } else {
-      console.error("Error message:", error.message);
       setMessage(`Error: ${error.message}`);
     }
   };
 
   return (
     <>
-      <Navbar
-        title="HackFest 2024"
-        mode={mode}
-        toggleMode={toggleMode}
-        username={username}
-      />
-      
-      <div >
+      <div>
         <input
           ref={inputRef}
           type="file"
@@ -152,10 +120,9 @@ const FileUpload = () => {
           style={{ display: "none" }}
         />
 
-        {/* Button to trigger the file input dialog */}
         {!selectedFile && (
           <button className="file-btn" onClick={onChooseFile}>
-            <FaCloudUploadAlt  size={60} />
+            <FaCloudUploadAlt size={60} />
             Upload File
           </button>
         )}
@@ -190,7 +157,7 @@ const FileUpload = () => {
 
                 {uploadStatus === "select" ? (
                   <button onClick={clearFileInput}>
-                    <span class="material-symbols-outlined close-icon">
+                    <span className="material-symbols-outlined close-icon">
                       close
                     </span>
                   </button>
@@ -200,7 +167,7 @@ const FileUpload = () => {
                       `${progress}%`
                     ) : uploadStatus === "done" ? (
                       <span
-                        class="material-symbols-outlined"
+                        className="material-symbols-outlined"
                         style={{ fontSize: "20px" }}
                       >
                         check
@@ -211,7 +178,7 @@ const FileUpload = () => {
               </div>
             </div>
 
-            <button type="button" class="upload-btn" onClick={handleFileUpload}>
+            <button type="button" className="upload-btn" onClick={handleFileUpload}>
               {uploadStatus === "select" || uploadStatus === "uploading"
                 ? "Upload"
                 : "Done"}
@@ -219,10 +186,9 @@ const FileUpload = () => {
           </>
         )}
 
-        {/* Render button to show DataDisplay if showButton is true */}
         <div>
           {showButton && (
-            <button type="button" class="btn btn-outline-success my-5" onClick={() => setShowDataDisplay(true)}>
+            <button type="button" className="btn btn-outline-success my-5" onClick={() => setShowDataDisplay(true)}>
               Run AI Model
             </button>
           )}

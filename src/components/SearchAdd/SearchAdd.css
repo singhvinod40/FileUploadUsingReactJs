@@ -1,0 +1,53 @@
+/* SearchAdd.css */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-left: 250px;
+    margin-top: 100px;
+    max-width: 800px;
+    width: 100%;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    position: relative; /* Keeps the icon positioned relative to the container */
+    flex: 1; /* Allows the search box to take up available space */
+}
+
+.search-box input {
+    flex: 1;
+    padding: 10px;
+    padding-right: 50px; /* Space for the icon */
+    border-radius: 25px;
+    border: 3px solid #66a4fa;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensures padding and border are included in width */
+}
+
+.search-box .icon {
+    position: absolute;
+    right: 10px; /* Position the icon inside the input field */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    color: #0910e8;
+    pointer-events: none; /* Ensures clicks on the icon do not interfere with the input */
+}
+
+.clear-button {
+    margin-left: 12px; /* Space between the input and the button */
+    padding: 10px 20px; /* Adjust padding for the button */
+    border-radius: 20px; /* Match with input border radius */
+    border: 3px solid #818187; /* Match border color */
+    background-color: #f8f9fa; /* Optional: background color */
+    color: #121213; /* Button text color */
+    font-size: 16px; /* Font size */
+    cursor: pointer;
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+/* Optional: Add hover effect for the button */
+.clear-button:hover {
+    background-color: #b4b8bd; /* Lighten background on hover */
+}
