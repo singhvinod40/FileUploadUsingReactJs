@@ -1,0 +1,104 @@
+{   
+    "result": {
+        "verdict": {
+            "inputGranularity": "PREMISE",
+            "validationGranularity": "OTHER",
+            "geocodeGranularity": "OTHER",
+            "addressComplete": true,
+            "hasUnconfirmedComponents": true
+        },
+        "address": {
+            "formattedAddress": "123 Main St, Springfield VIC 3000, Australia",
+            "postalAddress": {
+                "regionCode": "AU",
+                "languageCode": "en",
+                "postalCode": "3000",
+                "administrativeArea": "VIC",
+                "locality": "Springfield",
+                "addressLines": [
+                    "123 Main St"
+                ]
+            },
+            "addressComponents": [
+                {
+                    "componentName": {
+                        "text": "123"
+                    },
+                    "componentType": "street_number",
+                    "confirmationLevel": "UNCONFIRMED_BUT_PLAUSIBLE"
+                },
+                {
+                    "componentName": {
+                        "text": "Main St",
+                        "languageCode": "en"
+                    },
+                    "componentType": "route",
+                    "confirmationLevel": "UNCONFIRMED_BUT_PLAUSIBLE"
+                },
+                {
+                    "componentName": {
+                        "text": "Springfield",
+                        "languageCode": "en"
+                    },
+                    "componentType": "locality",
+                    "confirmationLevel": "UNCONFIRMED_BUT_PLAUSIBLE"
+                },
+                {
+                    "componentName": {
+                        "text": "VIC",
+                        "languageCode": "en"
+                    },
+                    "componentType": "administrative_area_level_1",
+                    "confirmationLevel": "CONFIRMED"
+                },
+                {
+                    "componentName": {
+                        "text": "3000"
+                    },
+                    "componentType": "postal_code",
+                    "confirmationLevel": "UNCONFIRMED_BUT_PLAUSIBLE"
+                },
+                {
+                    "componentName": {
+                        "text": "Australia",
+                        "languageCode": "en"
+                    },
+                    "componentType": "country",
+                    "confirmationLevel": "CONFIRMED"
+                }
+            ],
+            "unconfirmedComponentTypes": [
+                "street_number",
+                "route",
+                "locality",
+                "postal_code"
+            ]
+        },
+        "geocode": {
+            "location": {
+                "latitude": -36.9847807,
+                "longitude": 143.3906074
+            },
+            "plusCode": {
+                "globalCode": "4RM5298R+36"
+            },
+            "bounds": {
+                "low": {
+                    "latitude": -39.1983613,
+                    "longitude": 140.9618587
+                },
+                "high": {
+                    "latitude": -33.9806498,
+                    "longitude": 149.9764988
+                }
+            },
+            "featureSizeMeters": 20000,
+            "placeId": "ChIJT5UYfksx1GoRNJWCvuL8Tlo",
+            "placeTypes": [
+                "political",
+                "administrative_area_level_1"
+            ]
+        }
+    },
+    "responseId": "fbbca47d-07cf-44d8-b333-68af614da536"
+}

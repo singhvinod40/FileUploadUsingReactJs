@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import SearchAdd from '../SearchAdd/SearchAdd';
 import './Home.css'; // Ensure this CSS file exists
+import AddressValidator from '../AddressValidator/AddressValidator';
 
 function Home() {
     const location = useLocation();
@@ -29,6 +30,10 @@ function Home() {
         setActiveComponent('searchAdd');
     };
 
+    const handleAddresValidator = () => {
+        setActiveComponent('addressValidator');
+    };
+
     const handleReset = () => {
         setActiveComponent(null); // Reset to show both components
     };
@@ -48,7 +53,10 @@ function Home() {
                         Show File Upload
                     </button>
                     <button className="showComponent" onClick={handleSearchAddClick}>
-                        Show Search Add
+                        Search Address via GeoCoding
+                    </button>
+                    <button className="showComponent" onClick={handleAddresValidator}>
+                        Address Validator
                     </button>
                 </div>
             )}
@@ -57,6 +65,7 @@ function Home() {
                 <div className="components-container">
                     {activeComponent === 'fileUpload' && <FileUpload />}
                     {activeComponent === 'searchAdd' && <SearchAdd  />}
+                    {activeComponent === 'addressValidator' && <AddressValidator />}
                 </div>
             )}
 

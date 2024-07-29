@@ -1,46 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { TbMapPinSearch } from "react-icons/tb";
-import './SearchAdd.css';
+import './AddressValidator.css';
 import Spinner from "../spinner/Spinner";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
-const SearchAdd = () => {
+const AddressValidator = () => {
+
     const [searchParam, setSearchParam] = useState('');
     const [debounceValue, setDebounceValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoader] = useState(true);
+    const [loading, setLoader] = useState(false); // Set default loading to false
     const [error, setError] = useState("");
 
     useEffect(() => {
-        const handler = setTimeout(() => {
+        const handler = setTimeout(async () => {
             if (debounceValue) {
-                fetchData(debounceValue);
+                console.log("Searching for:", debounceValue);
+                setLoader(true);
+
+                try {
+                    const response = await axios.post('http://localhost:5000/validate-address', {
+                        address: debounceValue,
+                        apiKey: 'AIzaSyBNX9OW_g03948v05K-k49thC79wLBCJcQ',
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const json = response.data;
+                    console.log("API Response:", json);
+                    logFormattedAddresses(json.results);
+                    setSearchResults(json.results);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                    setError("Error fetching data");
+                } finally {
+                    setLoader(false);
+                }
             }
-        }, 500); // in milliseconds
+        }, 1500); // in milliseconds
 
         return () => {
             clearTimeout(handler); // Clear timeout if value changes before delay
         };
-    }, [debounceValue]); // Depend on debounceValue to trigger effect
-
-    const fetchData = (value) => {
-        console.log("Searching for:", value);
-        setLoader(true);
-
-        fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + value +
-            '&key=AIzaSyBNX9OW_g03948v05K-k49thC79wLBCJcQ')
-            .then((response) => response.json())
-            .then((json) => {
-                console.log("API Response:", json);
-                logFormattedAddresses(json.results);
-                setSearchResults(json.results); 
-                setLoader(false);    
-            }) 
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-    };
+    }, [debounceValue]);
 
     const logFormattedAddresses = (results) => {
         results.forEach((result, index) => {
@@ -68,8 +73,7 @@ const SearchAdd = () => {
     const clearSearch = () => {
         setSearchParam('');
         setSearchResults('');
-    }
-
+    };
 
     return (
         <>
@@ -90,19 +94,18 @@ const SearchAdd = () => {
                 </div>
             </Form>
 
-
             <div className="data-display-container d-flex justify-content-center align-items-center">
                 <div className="card" style={{ width: "50rem" }}>
                     <div className="card-body">
-                        <h5 className="card-title">Extracted Address By Geo Coding </h5>
+                        <h5 className="card-title">Address validation  </h5>
                         {loading && <Spinner />}
                         <div className="card-text">
-                            {!loading && searchResults ? (
+                            {!loading && searchResults.length > 0 ? (
                                 <pre className="pretty-json">{JSON.stringify(searchResults, null, 2)}</pre>
                             ) : error ? (
                                 <p>{error}</p>
                             ) : (
-                                <p>No address data available</p>
+                                <p>No Validation data available</p>
                             )}
                         </div>
 
@@ -112,10 +115,9 @@ const SearchAdd = () => {
                     </div>
                 </div>
             </div>
-            {/* Toast container */}
-            <ToastContainer />    
+            <ToastContainer />
         </>
     );
 }
 
-export default SearchAdd;
+export default AddressValidator;
