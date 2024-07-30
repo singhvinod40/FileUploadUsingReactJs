@@ -52,11 +52,15 @@
 }
 
 /* Styles for autocomplete dropdown */
+.autocomplete-container {
+    width: 100%;
+}
+
 .autocomplete-dropdown-container {
     position: absolute;
     z-index: 1000;
     background-color: white;
-    border: 1px solid #d4d4d4;
+    border: 2px solid #d4d4d4;
     border-radius: 3px;
     width: 100%;
     max-height: 200px;
@@ -65,13 +69,13 @@
 }
 
 .suggestion-item {
-    padding: 10px;
+    padding: 2px;
     cursor: pointer;
     background-color: #ffffff; /* Default background color for suggestions */
 }
 
 .suggestion-item--active {
-    background-color: #f0f0f0; /* Background color for active suggestion */
+    background-color: #d0efc4; /* Background color for active suggestion */
 }
 
 .pretty-json {
