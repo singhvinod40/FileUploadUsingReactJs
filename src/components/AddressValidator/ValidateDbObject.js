@@ -103,7 +103,7 @@ function ValidateDbObject() {
         } else {
             console.log('Selected Cell Value:', selectedCellValue);
             console.log('Corresponding Value:', correspondingValue);
-            toast.info("Structuring Existing data");
+            toast.info("Converting to Structured Address");
         }
     };
 

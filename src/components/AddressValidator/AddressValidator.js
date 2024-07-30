@@ -17,8 +17,8 @@ const AddressValidator = () => {
     const [isDbValidation, setIsDbValidation] = useState(false); // Toggle state
 
     useEffect(() => {
-        const handler = setTimeout(async () => {
-            if (debounceValue && isDbValidation) {
+        if (debounceValue && !isDbValidation) {
+            const handler = setTimeout(async () => {
                 console.log("Searching for:", debounceValue);
                 setLoader(true);
 
@@ -50,12 +50,12 @@ const AddressValidator = () => {
                 } finally {
                     setLoader(false);
                 }
-            }
-        }, 1500);
+            }, 1500);
 
-        return () => {
-            clearTimeout(handler);
-        };
+            return () => {
+                clearTimeout(handler);
+            };
+        }
     }, [debounceValue, isDbValidation]);
 
     const copyToClipboard = () => {
@@ -96,7 +96,7 @@ const AddressValidator = () => {
                     <input type="checkbox" checked={isDbValidation} onChange={handleToggle} />
                     <span className="slider round"></span>
                 </label>
-                <span className="toggle-label">{isDbValidation ? 'Validate DB Address' : 'User Input'}</span>
+                <span className="toggle-label">{isDbValidation ? 'Validate Exidting Address' : 'User Input'}</span>
             </div>
 
             {!isDbValidation && (
