@@ -2,7 +2,7 @@
 .search-container {
     display: flex;
     align-items: center;
-    margin-left: 250px;
+    justify-content: center;
     margin-top: 100px;
     max-width: 800px;
     width: 100%;
@@ -11,14 +11,13 @@
 .search-box {
     display: flex;
     align-items: center;
-    position: relative; /* Keeps the icon positioned relative to the container */
-    flex: 1; /* Allows the search box to take up available space */
+    position: relative;
+    width: 100%;
 }
 
 .search-box input {
-    flex: 1;
-    padding: 10px;
-    padding-right: 50px; /* Space for the icon */
+    width: 100%; /* Ensure the input takes up the full width of the search-box */
+    padding: 10px 40px 10px 10px; /* Space for the icon */
     border-radius: 25px;
     border: 3px solid #66a4fa;
     font-size: 16px;
@@ -50,4 +49,33 @@
 /* Optional: Add hover effect for the button */
 .clear-button:hover {
     background-color: #b4b8bd; /* Lighten background on hover */
+}
+
+/* Styles for autocomplete dropdown */
+.autocomplete-dropdown-container {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #d4d4d4;
+    border-radius: 3px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #ffffff; /* Default background color for suggestions */
+}
+
+.suggestion-item--active {
+    background-color: #f0f0f0; /* Background color for active suggestion */
+}
+
+.pretty-json {
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }

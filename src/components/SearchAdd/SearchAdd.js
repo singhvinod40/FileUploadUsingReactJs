@@ -4,6 +4,7 @@ import { TbMapPinSearch } from "react-icons/tb";
 import './SearchAdd.css';
 import Spinner from "../spinner/Spinner";
 import { toast, ToastContainer } from "react-toastify";
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 const SearchAdd = () => {
     const [searchParam, setSearchParam] = useState('');
@@ -39,6 +40,8 @@ const SearchAdd = () => {
             }) 
             .catch((error) => {
                 console.error("Error fetching data:", error);
+                setError("Error fetching data");
+                setLoader(false);
             });
     };
 
@@ -60,36 +63,71 @@ const SearchAdd = () => {
         });
     };
 
-    const handleChange = (value) => {
-        setSearchParam(value);
-        setDebounceValue(value); // Update debounceValue to trigger useEffect
+    const handleChange = (address) => {
+        setSearchParam(address);
+        setDebounceValue(address);
     };
 
     const clearSearch = () => {
         setSearchParam('');
-        setSearchResults('');
+        setSearchResults([]);
+        setError("");
     }
 
+    const handleSelect = (address) => {
+        setSearchParam(address);
+        setDebounceValue(address);
+    };
 
     return (
         <>
             <Form>
                 <div className="search-container">
                     <div className="search-box">
-                        <input
-                            type="text"
-                            placeholder="Search Address...."
-                            required
-                            id="searchBox"
+                        <PlacesAutocomplete
                             value={searchParam}
-                            onChange={(e) => handleChange(e.target.value)}
-                        />
-                        <TbMapPinSearch className="icon" />
+                            onChange={handleChange}
+                            onSelect={handleSelect}
+                        >
+                            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                                <div style={{ width: '100%' }}>
+                                    <input
+                                        {...getInputProps({
+                                            placeholder: 'Search Address....',
+                                            className: 'location-search-input',
+                                        })}
+                                        required
+                                        id="searchBox"
+                                    />
+                                    <TbMapPinSearch className="icon" />
+                                    <div className="autocomplete-dropdown-container">
+                                        {loading && <div>Loading...</div>}
+                                        {suggestions.map(suggestion => {
+                                            const className = suggestion.active
+                                                ? 'suggestion-item--active'
+                                                : 'suggestion-item';
+                                            const style = suggestion.active
+                                                ? { backgroundColor: '#f0f0f0', cursor: 'pointer' }
+                                                : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                                            return (
+                                                <div
+                                                    {...getSuggestionItemProps(suggestion, {
+                                                        className,
+                                                        style,
+                                                    })}
+                                                >
+                                                    <span>{suggestion.description}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                        </PlacesAutocomplete>
                     </div>
                     <Button onClick={clearSearch} className="clear-button">Clear</Button>
                 </div>
             </Form>
-
 
             <div className="data-display-container d-flex justify-content-center align-items-center">
                 <div className="card" style={{ width: "50rem" }}>
@@ -97,7 +135,7 @@ const SearchAdd = () => {
                         <h5 className="card-title">Extracted Address By Geo Coding </h5>
                         {loading && <Spinner />}
                         <div className="card-text">
-                            {!loading && searchResults ? (
+                            {!loading && searchResults.length > 0 ? (
                                 <pre className="pretty-json">{JSON.stringify(searchResults, null, 2)}</pre>
                             ) : error ? (
                                 <p>{error}</p>
@@ -106,9 +144,11 @@ const SearchAdd = () => {
                             )}
                         </div>
 
-                        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
-                            Copy to Clipboard
-                        </button>
+                        {searchResults.length > 0 && (
+                            <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
+                                Copy to Clipboard
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

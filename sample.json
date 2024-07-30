@@ -1,5 +1,4 @@
-{   
-    "result": {
+ {
         "verdict": {
             "inputGranularity": "PREMISE",
             "validationGranularity": "OTHER",
@@ -73,50 +72,5 @@
                 "locality",
                 "postal_code"
             ]
-        },
-        "geocode": {
-            "location": {
-                "latitude": -36.9847807,
-                "longitude": 143.3906074
-            },
-            "plusCode": {
-                "globalCode": "4RM5298R+36"
-            },
-            "bounds": {
-                "low": {
-                    "latitude": -39.1983613,
-                    "longitude": 140.9618587
-                },
-                "high": {
-                    "latitude": -33.9806498,
-                    "longitude": 149.9764988
-                }
-            },
-            "featureSizeMeters": 20000,
-            "placeId": "ChIJT5UYfksx1GoRNJWCvuL8Tlo",
-            "placeTypes": [
-                "political",
-                "administrative_area_level_1"
-            ]
         }
-    },
-    "responseId": "fbbca47d-07cf-44d8-b333-68af614da536"
-}
-
-{
-    "address": {
-        "Address": "123 Main St",
-        "BldgNb": "123",
-        "Ctry": "AU",
-        "CtrySubDvsn": "VIC",
-        "Dept": "N/A",
-        "Flr": "N/A",
-        "Name": "N/A",
-        "PstBx": "N/A",
-        "PstCd": "3000",
-        "Room": "N/A",
-        "StrtNm": "Main St",
-        "TwnNm": "Springfield"
-    },
-    "valid": true
-}
+    }

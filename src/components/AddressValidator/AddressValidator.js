@@ -7,12 +7,12 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
 const AddressValidator = () => {
-
     const [searchParam, setSearchParam] = useState('');
     const [debounceValue, setDebounceValue] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [loading, setLoader] = useState(false); // Set default loading to false
+    const [searchResults, setSearchResults] = useState(null);
+    const [loading, setLoader] = useState(false);
     const [error, setError] = useState("");
+    const [isValid, setIsValid] = useState(null);
 
     useEffect(() => {
         const handler = setTimeout(async () => {
@@ -29,30 +29,32 @@ const AddressValidator = () => {
                             'Content-Type': 'application/json'
                         }
                     });
+
                     const json = response.data;
                     console.log("API Response:", json);
-                    logFormattedAddresses(json.results);
-                    setSearchResults(json.results);
+
+                    if (json && json.address) {
+                        setSearchResults(json.address);
+                        setIsValid(json.valid);
+                    } else {
+                        setSearchResults(null);
+                        setError("Invalid response structure");
+                        setIsValid(null);
+                    }
                 } catch (error) {
                     console.error("Error fetching data:", error);
                     setError("Error fetching data");
+                    setIsValid(null);
                 } finally {
                     setLoader(false);
                 }
             }
-        }, 1500); // in milliseconds
+        }, 1500);
 
         return () => {
-            clearTimeout(handler); // Clear timeout if value changes before delay
+            clearTimeout(handler);
         };
     }, [debounceValue]);
-
-    const logFormattedAddresses = (results) => {
-        results.forEach((result, index) => {
-            console.log(`Result ${index + 1}:`);
-            console.log(`Formatted Address: ${result.formatted_address}`);
-        });
-    };
 
     const copyToClipboard = () => {
         const searchResultsString = JSON.stringify(searchResults, null, 2);
@@ -67,12 +69,14 @@ const AddressValidator = () => {
 
     const handleChange = (value) => {
         setSearchParam(value);
-        setDebounceValue(value); // Update debounceValue to trigger useEffect
+        setDebounceValue(value);
     };
 
     const clearSearch = () => {
         setSearchParam('');
-        setSearchResults('');
+        setSearchResults(null);
+        setError(""); // Clear error when clearing search
+        setIsValid(null);
     };
 
     return (
@@ -96,22 +100,42 @@ const AddressValidator = () => {
 
             <div className="data-display-container d-flex justify-content-center align-items-center">
                 <div className="card" style={{ width: "50rem" }}>
+                    {isValid !== null && (
+                        <span className={`badge rounded-pill ${isValid ? 'bg-success' : 'bg-warning'}`} style={{ position: 'absolute', top: '10px', right: '10px', width: 'auto' }}>
+                            {isValid ? 'Valid address' : 'Invalid address'}
+                        </span>
+                    )}
                     <div className="card-body">
-                        <h5 className="card-title">Address validation  </h5>
+                        <h5 className="card-title">Address validation</h5>
                         {loading && <Spinner />}
                         <div className="card-text">
-                            {!loading && searchResults.length > 0 ? (
-                                <pre className="pretty-json">{JSON.stringify(searchResults, null, 2)}</pre>
+                            {!loading && searchResults ? (
+                                <div className="small-text">
+                                    <p><strong>Address:</strong> {searchResults.Address}</p>
+                                    <p><strong>Building Number:</strong> {searchResults.BldgNb}</p>
+                                    <p><strong>Country:</strong> {searchResults.Ctry}</p>
+                                    <p><strong>State/Province:</strong> {searchResults.CtrySubDvsn}</p>
+                                    <p><strong>Department:</strong> {searchResults.Dept}</p>
+                                    <p><strong>Floor:</strong> {searchResults.Flr}</p>
+                                    <p><strong>Name:</strong> {searchResults.Name}</p>
+                                    <p><strong>Post Box:</strong> {searchResults.PstBx}</p>
+                                    <p><strong>Postal Code:</strong> {searchResults.PstCd}</p>
+                                    <p><strong>Room:</strong> {searchResults.Room}</p>
+                                    <p><strong>Street Name:</strong> {searchResults.StrtNm}</p>
+                                    <p><strong>Town Name:</strong> {searchResults.TwnNm}</p>
+                                </div>
+                            ) : !loading && !searchResults && !error ? (
+                                <p>No Validation data available</p>
                             ) : error ? (
                                 <p>{error}</p>
-                            ) : (
-                                <p>No Validation data available</p>
-                            )}
+                            ) : null}
                         </div>
 
-                        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
-                            Copy to Clipboard
-                        </button>
+                        {searchResults && (
+                            <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
+                                Copy to Clipboard
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
