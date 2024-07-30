@@ -1,69 +1,86 @@
-/* SearchAdd.css */
+/* AddressValidator.css */
 .search-container {
     display: flex;
     align-items: center;
-    margin-left: 250px;
-    margin-top: 100px;
+    justify-content: center; /* Center horizontally */
+    margin-top: 20px; /* Adjust as needed */
     max-width: 800px;
     width: 100%;
+    margin-left: auto; /* Center horizontally */
+    margin-right: auto; /* Center horizontally */
 }
 
-.search-box {
+/* Toggle switch container */
+.toggle-container {
     display: flex;
     align-items: center;
-    position: relative; /* Keeps the icon positioned relative to the container */
-    flex: 1; /* Allows the search box to take up available space */
+    justify-content: center;
+    margin-bottom: 1rem;
+    margin-top: 100px;
 }
 
-.search-box input {
-    flex: 1;
-    padding: 10px;
-    padding-right: 50px; /* Space for the icon */
-    border-radius: 25px;
-    border: 3px solid #66a4fa;
-    font-size: 16px;
-    box-sizing: border-box; /* Ensures padding and border are included in width */
+/* The switch - the container */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
 }
 
-.search-box .icon {
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Slider styling */
+.slider {
     position: absolute;
-    right: 10px; /* Position the icon inside the input field */
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    color: #0910e8;
-    pointer-events: none; /* Ensures clicks on the icon do not interfere with the input */
-}
-
-.clear-button {
-    margin-left: 12px; /* Space between the input and the button */
-    padding: 10px 20px; /* Adjust padding for the button */
-    border-radius: 20px; /* Match with input border radius */
-    border: 3px solid #818187; /* Match border color */
-    background-color: #f8f9fa; /* Optional: background color */
-    color: #121213; /* Button text color */
-    font-size: 16px; /* Font size */
     cursor: pointer;
-    white-space: nowrap; /* Prevent text from wrapping */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
 }
 
-/* Optional: Add hover effect for the button */
-.clear-button:hover {
-    background-color: #b4b8bd; /* Lighten background on hover */
-}
-/* AddressValidator.css */
-.small-text {
-    font-size: 0.875rem; /* Adjust the font size as needed */
-}
-.small-text p {
-    margin: 0.25rem 0; /* Adjust the margin to decrease spacing */
-    padding: 0; /* Remove any padding */
-}
-.badge {
+/* Slider before (the knob) */
+.slider:before {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: auto; /* Adjust the width as needed */
-    font-size: 0.75rem; /* Adjust the font size to make it smaller */
-    padding: 0.5em 0.75em; /* Adjust padding as needed */
+    content: "";
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+/* When the checkbox is checked, change the slider's background */
+input:checked + .slider {
+    background-color: #66a4fa;
+}
+
+/* When the checkbox is checked, move the knob to the right */
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Rounded slider */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Label for the switch */
+.toggle-label {
+    margin-left: 10px;
+    font-size: 16px;
 }

@@ -5,6 +5,7 @@ import './AddressValidator.css';
 import Spinner from "../spinner/Spinner";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import ValidateDbObject from './ValidateDbObject';
 
 const AddressValidator = () => {
     const [searchParam, setSearchParam] = useState('');
@@ -13,10 +14,11 @@ const AddressValidator = () => {
     const [loading, setLoader] = useState(false);
     const [error, setError] = useState("");
     const [isValid, setIsValid] = useState(null);
+    const [isDbValidation, setIsDbValidation] = useState(false); // Toggle state
 
     useEffect(() => {
         const handler = setTimeout(async () => {
-            if (debounceValue) {
+            if (debounceValue && isDbValidation) {
                 console.log("Searching for:", debounceValue);
                 setLoader(true);
 
@@ -54,7 +56,7 @@ const AddressValidator = () => {
         return () => {
             clearTimeout(handler);
         };
-    }, [debounceValue]);
+    }, [debounceValue, isDbValidation]);
 
     const copyToClipboard = () => {
         const searchResultsString = JSON.stringify(searchResults, null, 2);
@@ -79,66 +81,89 @@ const AddressValidator = () => {
         setIsValid(null);
     };
 
+    const handleToggle = () => {
+        setIsDbValidation(prevState => !prevState);
+        setSearchParam('');
+        setSearchResults(null);
+        setError("");
+        setIsValid(null);
+    };
+
     return (
         <>
-            <Form>
-                <div className="search-container">
-                    <div className="search-box">
-                        <input
-                            type="text"
-                            placeholder="Search Address...."
-                            required
-                            id="searchBox"
-                            value={searchParam}
-                            onChange={(e) => handleChange(e.target.value)}
-                        />
-                        <TbMapPinSearch className="icon" />
-                    </div>
-                    <Button onClick={clearSearch} className="clear-button">Clear</Button>
-                </div>
-            </Form>
-
-            <div className="data-display-container d-flex justify-content-center align-items-center">
-                <div className="card" style={{ width: "50rem" }}>
-                    {isValid !== null && (
-                        <span className={`badge rounded-pill ${isValid ? 'bg-success' : 'bg-warning'}`} style={{ position: 'absolute', top: '10px', right: '10px', width: 'auto' }}>
-                            {isValid ? 'Valid address' : 'Invalid address'}
-                        </span>
-                    )}
-                    <div className="card-body">
-                        <h5 className="card-title">Address validation</h5>
-                        {loading && <Spinner />}
-                        <div className="card-text">
-                            {!loading && searchResults ? (
-                                <div className="small-text">
-                                    <p><strong>Address:</strong> {searchResults.Address}</p>
-                                    <p><strong>Building Number:</strong> {searchResults.BldgNb}</p>
-                                    <p><strong>Country:</strong> {searchResults.Ctry}</p>
-                                    <p><strong>State/Province:</strong> {searchResults.CtrySubDvsn}</p>
-                                    <p><strong>Department:</strong> {searchResults.Dept}</p>
-                                    <p><strong>Floor:</strong> {searchResults.Flr}</p>
-                                    <p><strong>Name:</strong> {searchResults.Name}</p>
-                                    <p><strong>Post Box:</strong> {searchResults.PstBx}</p>
-                                    <p><strong>Postal Code:</strong> {searchResults.PstCd}</p>
-                                    <p><strong>Room:</strong> {searchResults.Room}</p>
-                                    <p><strong>Street Name:</strong> {searchResults.StrtNm}</p>
-                                    <p><strong>Town Name:</strong> {searchResults.TwnNm}</p>
-                                </div>
-                            ) : !loading && !searchResults && !error ? (
-                                <p>No Validation data available</p>
-                            ) : error ? (
-                                <p>{error}</p>
-                            ) : null}
-                        </div>
-
-                        {searchResults && (
-                            <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
-                                Copy to Clipboard
-                            </button>
-                        )}
-                    </div>
-                </div>
+            <div className="toggle-container">
+                <label className="switch">
+                    <input type="checkbox" checked={isDbValidation} onChange={handleToggle} />
+                    <span className="slider round"></span>
+                </label>
+                <span className="toggle-label">{isDbValidation ? 'Validate DB Address' : 'User Input'}</span>
             </div>
+
+            {!isDbValidation && (
+                <Form>
+                    <div className="search-container">
+                        <div className="search-box">
+                            <input
+                                type="text"
+                                placeholder="Search Address...."
+                                required
+                                id="searchBox"
+                                value={searchParam}
+                                onChange={(e) => handleChange(e.target.value)}
+                            />
+                            <TbMapPinSearch className="icon" />
+                        </div>
+                        <Button onClick={clearSearch} className="clear-button">Clear</Button>
+                    </div>
+                </Form>
+            )}
+
+            {isDbValidation && <ValidateDbObject />}
+
+            {!isDbValidation && (
+                <div className="data-display-container d-flex justify-content-center align-items-center">
+                    <div className="card" style={{ width: "50rem" }}>
+                        {isValid !== null && (
+                            <span className={`badge rounded-pill ${isValid ? 'bg-success' : 'bg-warning'}`}>
+                                {isValid ? 'Valid address' : 'Invalid address'}
+                            </span>
+                        )}
+                        <div className="card-body">
+                            <h5 className="card-title">Address validation</h5>
+                            {loading && <Spinner />}
+                            <div className="card-text">
+                                {!loading && searchResults ? (
+                                    <div className="small-text">
+                                        <p><strong>Address:</strong> {searchResults.Address}</p>
+                                        <p><strong>Building Number:</strong> {searchResults.BldgNb}</p>
+                                        <p><strong>Country:</strong> {searchResults.Ctry}</p>
+                                        <p><strong>State/Province:</strong> {searchResults.CtrySubDvsn}</p>
+                                        <p><strong>Department:</strong> {searchResults.Dept}</p>
+                                        <p><strong>Floor:</strong> {searchResults.Flr}</p>
+                                        <p><strong>Name:</strong> {searchResults.Name}</p>
+                                        <p><strong>Post Box:</strong> {searchResults.PstBx}</p>
+                                        <p><strong>Postal Code:</strong> {searchResults.PstCd}</p>
+                                        <p><strong>Room:</strong> {searchResults.Room}</p>
+                                        <p><strong>Street Name:</strong> {searchResults.StrtNm}</p>
+                                        <p><strong>Town Name:</strong> {searchResults.TwnNm}</p>
+                                    </div>
+                                ) : !loading && !searchResults && !error ? (
+                                    <p>No Validation data available</p>
+                                ) : error ? (
+                                    <p>{error}</p>
+                                ) : null}
+                            </div>
+
+                            {searchResults && (
+                                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={copyToClipboard}>
+                                    Copy to Clipboard
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <ToastContainer />
         </>
     );

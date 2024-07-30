@@ -1,0 +1,107 @@
+/* Ensure the container is responsive and centered */
+.container {
+    max-width: 75%;
+    padding: 0 15px;
+}
+
+/* Make the table container responsive */
+.table-container {
+    height: calc(100vh - 6rem);
+    /* Adjust this value to take up the space below the button */
+    overflow-y: auto;
+    /* Enable vertical scrolling if needed */
+    margin-top: 15rem;
+    /* Space between the button and the table */
+    margin-bottom: 0;
+    /* No space at the bottom */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure table takes full width of the container */
+.table {
+    width: 100%;
+    /* Make the table take up 100% of the container's width */
+    min-width: 900px;
+    /* Set a minimum width to ensure it doesn't shrink too much */
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    /* Decreased font size */
+    margin-top: auto;
+    /* Pushes the table to the bottom of the container */
+}
+
+/* Add a border to the table */
+.table-outline {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+}
+
+/* Style table headers and cells */
+.table-outline th,
+.table-outline td {
+    border: 2px solid #dee2e6;
+    padding: 0.75rem;
+    vertical-align: top;
+    text-align: center;
+}
+
+.table-outline th {
+    background-color: aliceblue;
+    color: #000;
+    /* Ensure the text color for headers is visible */
+    font-weight: bold;
+    /* Make header text bold for better visibility */
+}
+
+/* Style for selectable cells */
+.selectable-cell {
+    cursor: pointer;
+}
+
+.selectable-cell.selected {
+    background-color: #d1e7dd;
+    font-weight: bold;
+}
+
+/* Ensure the button is centered and responsive */
+.d-flex {
+    display: flex;
+    justify-content: center;
+}
+
+.my-2 {
+    margin: 0.5rem 0;
+}
+
+/* Responsive design for different screen sizes */
+@media (max-width: 768px) {
+
+    .table-outline th,
+    .table-outline td {
+        font-size: 0.75rem;
+        /* Smaller text on small screens */
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table-container {
+        /* Optional: You might want to adjust the height on smaller screens */
+        height: calc(100vh - 4rem);
+        /* Adjust as needed for smaller screens */
+    }
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
