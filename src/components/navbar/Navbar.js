@@ -21,7 +21,7 @@ export default function Navbar(props) {
         </Tooltip>
     );
 
-    const iconColor = props.mode === 'light' ? '#000000' : '#ffffff';
+    const iconColor = props.mode === 'light' ?  '#ffffff' :'#000000'  ;
 
     const logOut = () => {
         history.push('/login');
@@ -30,7 +30,7 @@ export default function Navbar(props) {
 
     return (
         <>
-            <nav className={`navbar navbar-expand-lg fixed-top navbar-${props.mode} bg-${props.mode}`}>
+            <nav className={`navbar navbar-expand-lg fixed-top navbar-${props.mode == 'light' ? 'dark' :'light'} bg-${props.mode == 'light' ? 'dark' :'light'}`}>
                 <div className='container-fluid'>
                     <Link to="/home" className="logo"> 
                         <img src={logo} alt="Logo" className="logo-img" style={{ width: "80px", height: "50px" }} />
@@ -46,7 +46,7 @@ export default function Navbar(props) {
                             {/* Add any additional nav items here */}
                         </ul>
                         <div className="d-inline-flex align-items-center">
-                            {props.mode === 'light' ? <FaUserCircle size={30} style={{ color: iconColor, marginRight: '5px' }} /> : <FaRegUser size={30} style={{ color: iconColor, marginRight: '5px' }} />}
+                            {props.mode === 'dark' ? <FaUserCircle size={30} style={{ color: iconColor, marginRight: '5px' }} /> : <FaRegUser size={30} style={{ color: iconColor, marginRight: '5px' }} />}
                             <span style={{ color: iconColor }}>Welcome {props.username}</span>
                         </div>
                     </div>
@@ -58,7 +58,7 @@ export default function Navbar(props) {
                             overlay={logoutIcon}
                         >
                             <div className="d-inline-block" onClick={logOut} >
-                                {props.mode === 'light' ? <CiPower size={30} /> : <CiPower size={30} color="#ffffff" />}
+                                {props.mode === 'dark' ? <CiPower size={30} /> : <CiPower size={30} color="#ffffff" />}
                             </div>
                         </OverlayTrigger>
                     </div>
@@ -70,7 +70,7 @@ export default function Navbar(props) {
                             overlay={switchTooltip}
                         >
                             <div className="d-inline-block" onClick={props.toggleMode}>
-                                {props.mode === 'light' ? <MdLightMode size={30} /> : <MdDarkMode size={30} color="#ffffff" />}
+                                {props.mode === 'dark' ? <MdLightMode size={30} /> : <MdDarkMode size={30} color="#ffffff" />}
                             </div>
                         </OverlayTrigger>
                     </div>

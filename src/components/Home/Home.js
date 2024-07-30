@@ -41,7 +41,7 @@ function Home() {
     return (
         <div className="home-container">
             <Navbar
-                title="HackFest 2024"
+                title="HackFest 2024 - ADDAI (app) "
                 mode={mode}
                 toggleMode={toggleMode}
                 username={username}
