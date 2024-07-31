@@ -3,8 +3,9 @@ import "./FileUpload.css";
 import axios from "axios";
 import DataDisplay from "../TableView/TableComponent";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
 
-const FileUpload = ({ onFileUploadClick }) => {
+const FileUpload = () => {
   const inputRef = useRef();
   const [selectedFile, setSelectedFile] = useState(null);
   const [pdfURL, setPdfURL] = useState("");
@@ -31,7 +32,6 @@ const FileUpload = ({ onFileUploadClick }) => {
 
   const onChooseFile = () => {
     inputRef.current.click();
-  
   };
 
   const clearFileInput = () => {
@@ -43,7 +43,6 @@ const FileUpload = ({ onFileUploadClick }) => {
     setFileUrl("");
     setShowDataDisplay(false);
     setShowButton(false);
-
   };
 
   const getPresignedUrl = async (fileName) => {
@@ -65,7 +64,6 @@ const FileUpload = ({ onFileUploadClick }) => {
 
     if (uploadStatus === "done") {
       clearFileInput();
-      onFileUploadClick(); // reset Homeview when clicked on done 
       return;
     }
 
@@ -96,6 +94,29 @@ const FileUpload = ({ onFileUploadClick }) => {
       setShowButton(true);
     } catch (error) {
       handleError(error, "Error uploading file");
+    }
+  };
+
+  const handleFileDelete = async () => {
+    const bucketName = "hackfest2024"; // Replace with your bucket name
+    const fileName = selectedFile.name; // The name of the file to delete
+
+    try {
+      await axios.post(
+        'https://asia-south1-apt-terrain-351005.cloudfunctions.net/deleteFileFunction',
+        {
+          bucket_name: bucketName,
+          file_name: fileName
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      toast.info("File Deleted Successfully!");
+    } catch (error) {
+      handleError(error, "Error deleting file");
     }
   };
 
@@ -188,15 +209,21 @@ const FileUpload = ({ onFileUploadClick }) => {
 
         <div>
           {showButton && (
-            <button type="button" className="btn btn-outline-success my-5" onClick={() => setShowDataDisplay(true)}>
-              Run AI Model
-            </button>
+            <>
+              <button type="button" className="btn btn-outline-success my-5" onClick={() => setShowDataDisplay(true)}>
+                Run AI Model
+              </button>
+              <button type="button" className="btn btn-outline-danger my-5 mx-2" onClick={handleFileDelete}>
+                Delete File
+              </button>
+            </>
           )}
           {showDataDisplay && (
             <DataDisplay fileUrl={fileUrl} />
           )}
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

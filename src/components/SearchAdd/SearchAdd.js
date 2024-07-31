@@ -3,7 +3,6 @@ import { Button, Form } from 'react-bootstrap';
 import { TbMapPinSearch } from "react-icons/tb";
 import './SearchAdd.css';
 import Spinner from "../spinner/Spinner";
-import { toast, ToastContainer } from "react-toastify";
 import PlacesAutocomplete from 'react-places-autocomplete';
 import GoogleMapComponent from '../GoogleMap/GoogleMapComponent';
 
@@ -153,7 +152,6 @@ const SearchAdd = () => {
                 />
             )}
 
-            <ToastContainer />
         </>
     );
 };

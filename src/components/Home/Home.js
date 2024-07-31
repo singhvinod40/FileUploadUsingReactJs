@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FileUpload from '../uploadFile/FileUpload';
 import { useLocation } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
@@ -50,13 +50,13 @@ function Home() {
             {!activeComponent && (
                 <div className="buttons-container">
                     <button className="showComponent" onClick={handleFileUploadClick}>
-                        Show File Upload
+                        Extract
                     </button>
                     <button className="showComponent" onClick={handleSearchAddClick}>
-                        Search Address via GeoCoding
+                        Capture
                     </button>
                     <button className="showComponent" onClick={handleAddresValidator}>
-                        Address Validator
+                        Convert
                     </button>
                 </div>
             )}
@@ -64,14 +64,14 @@ function Home() {
             {activeComponent && (
                 <div className="components-container">
                     {activeComponent === 'fileUpload' && <FileUpload />}
-                    {activeComponent === 'searchAdd' && <SearchAdd  />}
+                    {activeComponent === 'searchAdd' && <SearchAdd />}
                     {activeComponent === 'addressValidator' && <AddressValidator />}
                 </div>
             )}
 
             {activeComponent && (
-                <button type="button" className ="btn btn-outline-info" style ={{marginTop: "10px"}} onClick={handleReset}>
-                    View Home 
+                <button type="button" className="btn btn-outline-info" style={{ marginTop: "10px" }} onClick={handleReset}>
+                    View Home
                 </button>
             )}
         </div>
