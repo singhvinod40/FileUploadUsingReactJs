@@ -59,7 +59,16 @@ const DataDisplay = ({ fileUrl }) => {
                         {loading && <Spinner />}
                         <div className="card-text">
                             {!loading && address ? (
-                                <pre className="pretty-json">{JSON.stringify(address, null, 2)}</pre>
+                                <pre className="pretty-json">
+                                    {Object.entries(address).length === 0
+                                        ? "No address data available"
+                                        : Object.entries(address).map(([key, value]) => (
+                                            <div key={key}>
+                                                <strong>{key}:</strong> {value}
+                                            </div>
+                                        ))
+                                    }
+                                </pre>
                             ) : error ? (
                                 <p>{error}</p>
                             ) : (

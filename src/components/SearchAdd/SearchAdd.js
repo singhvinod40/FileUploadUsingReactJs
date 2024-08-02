@@ -145,12 +145,12 @@ const SearchAdd = () => {
             </div>
             
             {/* Pass latitude and longitude to another component */}
-            {selectedLocation && (
+            {/* {selectedLocation && (
                 <GoogleMapComponent
                     latitude={selectedLocation.lat}
                     longitude={selectedLocation.lng}
                 />
-            )}
+            )} */}
 
         </>
     );

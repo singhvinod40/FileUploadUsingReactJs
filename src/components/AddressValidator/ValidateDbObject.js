@@ -14,7 +14,7 @@ function ValidateDbObject() {
     // Sample data, simulating an API response with additional entries
     const sampleData = [
         {
-            "Unstructured": { "address": "123 Main St" },
+            "Unstructured": { "address": "123 Main St, Springfield, VIC, AU, 3000 " },
             "Structured": {
                 "Address": "123 Main St",
                 "BldgNb": "123",
@@ -31,25 +31,11 @@ function ValidateDbObject() {
             }
         },
         // Additional sample data items
-        { "Unstructured": { "address": "456 Elm St" }, "Structured": {} },
+        { "Unstructured": { "address": "456 Elm St, Oak Ave,London,  ENG E1 6AN" }, "Structured": {} },
+       
+        
         {
-            "Unstructured": { "address": "789 Oak Ave" }, "Structured": {
-                "Address": "789 Oak Ave",
-                "BldgNb": "789",
-                "Ctry": "GB",
-                "CtrySubDvsn": "ENG",
-                "Dept": "Marketing",
-                "Flr": "3rd",
-                "Name": "Jane Smith",
-                "PstBx": "N/A",
-                "PstCd": "E1 6AN",
-                "Room": "305",
-                "StrtNm": "Oak Ave",
-                "TwnNm": "London"
-            }
-        },
-        {
-            "Unstructured": { "address": "321 Pine Rd" }, "Structured": {
+            "Unstructured": { "address": "321 Pine Rd, Toronto, CA ,K1A" }, "Structured": {
                 "Address": "321 Pine Rd",
                 "BldgNb": "321",
                 "Ctry": "CA",
@@ -64,8 +50,7 @@ function ValidateDbObject() {
                 "TwnNm": "Toronto"
             }
         },
-        // Add 15 more sample items
-        ...Array.from({ length: 15 }, (_, index) => ({
+        {
             "Unstructured": { "address": `Address ${index + 4}` },
             "Structured": {
                 "Address": `Address ${index + 4}`,
@@ -81,7 +66,8 @@ function ValidateDbObject() {
                 "StrtNm": `Street ${index + 4}`,
                 "TwnNm": `Town ${index + 4}`
             }
-        }))
+
+        }
     ];
 
     // Pagination logic
