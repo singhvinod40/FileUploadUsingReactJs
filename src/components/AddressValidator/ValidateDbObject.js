@@ -1,99 +1,102 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Button, Pagination } from 'react-bootstrap';
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './ValidateDbObject.css';
 
 function ValidateDbObject() {
-    // State to manage selected cell value and its corresponding value
+    const [data, setData] = useState([]);
     const [selectedCellValue, setSelectedCellValue] = useState(null);
     const [correspondingValue, setCorrespondingValue] = useState(null);
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10); // Adjust this value as needed
+    const [itemsPerPage] = useState(10);
 
-    // Sample data, simulating an API response with additional entries
-    const sampleData = [
-        {
-            "Unstructured": { "address": "123 Main St, Springfield, VIC, AU, 3000 " },
-            "Structured": {
-                "Address": "123 Main St",
-                "BldgNb": "123",
-                "Ctry": "AU",
-                "CtrySubDvsn": "VIC",
-                "Dept": "N/A",
-                "Flr": "N/A",
-                "Name": "N/A",
-                "PstBx": "N/A",
-                "PstCd": "3000",
-                "Room": "N/A",
-                "StrtNm": "Main St",
-                "TwnNm": "Springfield"
-            }
-        },
-        // Additional sample data items
-        { "Unstructured": { "address": "456 Elm St, Oak Ave,London,  ENG E1 6AN" }, "Structured": {} },
-       
-        
-        {
-            "Unstructured": { "address": "321 Pine Rd, Toronto, CA ,K1A" }, "Structured": {
-                "Address": "321 Pine Rd",
-                "BldgNb": "321",
-                "Ctry": "CA",
-                "CtrySubDvsn": "ON",
-                "Dept": "HR",
-                "Flr": "1st",
-                "Name": "Emily Davis",
-                "PstBx": "N/A",
-                "PstCd": "K1A 0B1",
-                "Room": "102",
-                "StrtNm": "Pine Rd",
-                "TwnNm": "Toronto"
-            }
-        },
-        {
-            "Unstructured": { "address": `Address ${index + 4}` },
-            "Structured": {
-                "Address": `Address ${index + 4}`,
-                "BldgNb": `${index + 4}`,
-                "Ctry": "US",
-                "CtrySubDvsn": "State",
-                "Dept": "Department",
-                "Flr": "Floor",
-                "Name": `Name ${index + 4}`,
-                "PstBx": "P.O. Box",
-                "PstCd": `ZIP${index + 4}`,
-                "Room": `${index + 4}`,
-                "StrtNm": `Street ${index + 4}`,
-                "TwnNm": `Town ${index + 4}`
-            }
-
+    const fetchData = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/getAllAddress');
+            setData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast.error('Failed to fetch data');
         }
-    ];
+    };
 
-    // Pagination logic
-    const totalPages = Math.ceil(sampleData.length / itemsPerPage);
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const totalPages = Math.ceil(data.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = sampleData.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-    // Handle cell click
-    const handleCellClick = (unstructuredValue, structuredValue) => {
+    const handleCellClick = (unstructuredValue, structuredValue, addressId) => {
         setSelectedCellValue(unstructuredValue);
         setCorrespondingValue(structuredValue);
+        setSelectedAddressId(addressId);
     };
 
-    // Handle button click
-    const handleButtonClick = () => {
-        if (correspondingValue && Object.values(correspondingValue).some(value => value !== "" && value !== "N/A")) {
+    const handleButtonClick = async () => {
+        if (correspondingValue && correspondingValue.Address) {
+            console.log('Address field has a value:', correspondingValue.Address);
             toast.success("Already Structured");
-        } else {
-            console.log('Selected Cell Value:', selectedCellValue);
-            console.log('Corresponding Value:', correspondingValue);
+            return;
+        }
+
+        console.log('Selected Cell Value:', selectedCellValue);
+
+        try {
             toast.info("Converting to Structured Address");
+            const response = await axios.post('http://localhost:5000/validate-address', {
+                address: selectedCellValue,
+                apiKey: 'AIzaSyBNX9OW_g03948v05K-k49thC79wLBCJcQ',
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const json = response.data;
+            console.log("API Response:", json);
+
+            if (json && json.address) {
+                console.log("Structured address from API:", json.address);
+                await updateAddressInJavaAPI(json.address);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            toast.error("Error fetching structured address");
         }
     };
 
-    // Handle page change
+    const updateAddressInJavaAPI = async (structuredAddress) => {
+        try {
+            const response = await axios.put('http://localhost:8080/updateAddress', {
+                structuredAddress: structuredAddress,
+                addressId: selectedAddressId,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const json = response.data;
+            console.log("API Response:", json);
+
+            if (json && json.address) {
+                console.log("Structured address from API:", json.address);
+                toast.info("Address updated successfully");
+                fetchData(); // Refresh the table data after updating
+            }
+            toast.success("Converted SuccessFully")
+        } catch (error) {
+            console.error("Error updating data:", error);
+            toast.error("Error updating address");
+        }
+    };
+
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -103,6 +106,9 @@ function ValidateDbObject() {
             <div className="d-flex my-2">
                 <Button type="button" variant="outline-dark" onClick={handleButtonClick}>
                     Convert to Structured Address
+                </Button>
+                <Button type="button" variant="outline-dark" onClick={fetchData} className="ml-2">
+                    Refresh Data
                 </Button>
             </div>
 
@@ -120,7 +126,7 @@ function ValidateDbObject() {
                                 <tr key={index}>
                                     <td
                                         className={`selectable-cell ${selectedCellValue === item.Unstructured.address ? 'selected' : ''}`}
-                                        onClick={() => handleCellClick(item.Unstructured.address, item.Structured)}
+                                        onClick={() => handleCellClick(item.Unstructured.address, item.Structured, item.addressId)}
                                     >
                                         {item.Unstructured.address}
                                     </td>
